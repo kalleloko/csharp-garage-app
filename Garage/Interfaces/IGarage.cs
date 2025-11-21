@@ -1,7 +1,7 @@
-﻿using GarageApp.Models;
+﻿namespace GarageApp.Interfaces;
 
-namespace GarageApp.Interfaces;
-
-internal interface IGarage : IEnumerable<Vehicle>
+internal interface IGarage<T> : IEnumerable<T> where T : IVehicle
 {
+    public IEnumerable<T> Vehicles { get; }
+    public int MaxCapacity { set; get; }
 }

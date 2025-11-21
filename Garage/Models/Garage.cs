@@ -1,17 +1,8 @@
 ﻿using GarageApp.Interfaces;
-using System.Collections;
 
 namespace GarageApp.Models;
 
-public class Garage : IGarage
+public class Garage<T> : IGarage<T> where T : IVehicle
 {
-    public IEnumerator<Vehicle> GetEnumerator()
-    {
-        throw new NotImplementedException();
-    }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
 }
