@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace GarageApp.Models;
 
-internal class Garage : IGarage
+public class Garage : IGarage
 {
     public IEnumerator<Vehicle> GetEnumerator()
     {
