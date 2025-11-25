@@ -2,7 +2,7 @@
 
 internal interface IGarageHandler<T> where T : IVehicle
 {
-    public IEnumerable<T> Vehicles { get; set; }
+    public IEnumerable<T> Vehicles { get; }
     public IEnumerable<KeyValuePair<string, IEnumerable<T>>> VehiclesByType { get; }
     public bool AddVehicle(T vehicle);
     public bool RemoveVehicle(T vehicle);

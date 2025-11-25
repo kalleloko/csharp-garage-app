@@ -11,7 +11,10 @@ internal class GarageHandler<T> : IGarageHandler<T> where T : IVehicle
         _garage = garage;
     }
 
-    public IEnumerable<T> Vehicles { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public IEnumerable<T> Vehicles
+    {
+        get => (IEnumerable<T>)_garage.Vehicles.Where(v => v is not null);
+    }
 
     public IEnumerable<KeyValuePair<string, IEnumerable<T>>> VehiclesByType => throw new NotImplementedException();
 

@@ -13,6 +13,8 @@ internal class Program
         IGarage<IVehicle> garage = new Garage<IVehicle>();
         IGarageHandler<IVehicle> garageHandler = new GarageHandler<IVehicle>(garage);
 
-        GarageManager.Init(ui, garageHandler);
+        GarageManager manager = new(ui, garageHandler);
+
+        manager.Run();
     }
 }
