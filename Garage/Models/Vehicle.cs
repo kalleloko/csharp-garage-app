@@ -62,7 +62,7 @@ internal abstract class Vehicle : IVehicle
             {
                 throw new ArgumentException("Registration number can only contain english alphanumerical values");
             }
-            _registrationNumber = value;
+            _registrationNumber = value.ToUpper();
         }
     }
 
