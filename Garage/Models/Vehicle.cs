@@ -3,7 +3,7 @@
 using GarageApp.Interfaces;
 using System.Text.RegularExpressions;
 
-internal abstract class Vehicle : IVehicle
+public abstract class Vehicle : IVehicle
 {
     private int _wheelCount = 4;
     private string _registrationNumber = string.Empty;

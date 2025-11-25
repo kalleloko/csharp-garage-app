@@ -1,6 +1,6 @@
 ﻿namespace GarageApp.Interfaces;
 
-internal interface IVehicle
+public interface IVehicle
 {
     public string Model { get; init; }
     public string Manufacturer { get; init; }
