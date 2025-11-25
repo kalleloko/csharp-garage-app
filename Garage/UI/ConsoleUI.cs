@@ -51,9 +51,46 @@ public class ConsoleUI : IUI
             return SelectInput<T>(options, displayFunc, prompt, errorMessage);
         }
     }
-    public T PrintMenu<T>(IEnumerable<IMenuItem> menu, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!")
+    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!")
     {
-        throw new NotImplementedException();
+        while (true)
+        {
+            PrintLine(prompt);
+            foreach (IMenuItem item in menu)
+            {
+                Print($"{item.Key}: {item.Label}");
+                Console.WriteLine(item.SubItems is null ? "" : "...");
+            }
+            PrintLine($"{exitItem.Key}: {exitItem.Label}");
+
+            ConsoleKey selected = AskForInput<ConsoleKey>("", errorMessage);
+            Console.Clear();
+            if (selected == exitItem.Key)
+            {
+                return;
+            }
+            IMenuItem? selectedItem = menu.Where(item => item.Key == selected).FirstOrDefault();
+            if (selectedItem is null)
+            {
+                PrintErrorLine(errorMessage);
+                PrintMenu(menu, exitItem, prompt, errorMessage);
+                return;
+            }
+            if (selectedItem.SubItems is not null)
+            {
+                PrintMenu(selectedItem.SubItems, exitItem, $"{selectedItem.Label}: {prompt}", errorMessage);
+            }
+            else if (selectedItem.Action is not null)
+            {
+                selectedItem.Action.Invoke();
+                Console.WriteLine();
+            }
+            else
+            {
+                PrintErrorLine($"'{selectedItem.Label}' har inte någon funktion. Välj något annat");
+                PrintMenu(menu, exitItem, prompt, errorMessage);
+            }
+        }
     }
 
     /// <inheritdoc/>
@@ -96,17 +133,22 @@ public class ConsoleUI : IUI
     private static T ParseValue<T>(string? input)
     {
         // special case for strings
-        if (typeof(T) == typeof(string))
+        Type type = typeof(T);
+        if (type == typeof(string))
         {
             return (T)(object)(input ?? "");
         }
+        if (type.IsEnum)
+        {
+            return (T)Enum.Parse(type, input ?? "", true);
+        }
 
         // get TryParse(string, out T) method
-        var tryParseMethod = typeof(T).GetMethod(
+        var tryParseMethod = type.GetMethod(
             "TryParse",
             BindingFlags.Public | BindingFlags.Static,
             null,
-            new Type[] { typeof(string), typeof(T).MakeByRefType() },
+            new Type[] { typeof(string), type.MakeByRefType() },
             null
         );
 
@@ -114,7 +156,7 @@ public class ConsoleUI : IUI
         {
             // type T does not have a TryParse method
             throw new NotSupportedException(
-                $"Type {typeof(T).Name} does not support TryParse."
+                $"Type {type.Name} does not support TryParse."
             );
         }
 
@@ -127,7 +169,7 @@ public class ConsoleUI : IUI
         {
             return (T)args[1]!; // args[1] holds the out result
         }
-        throw new FormatException($"Could not parse '{input}' to {typeof(T).Name}.");
+        throw new FormatException($"Could not parse '{input}' to {type.Name}.");
     }
 
     /// <inheritdoc/>

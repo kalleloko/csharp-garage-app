@@ -10,4 +10,28 @@ internal class GarageHandler<T> : IGarageHandler<T> where T : IVehicle
     {
         _garage = garage;
     }
+
+    public IEnumerable<T> Vehicles { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public IEnumerable<KeyValuePair<string, IEnumerable<T>>> VehiclesByType => throw new NotImplementedException();
+
+    public bool AddVehicle(T vehicle)
+    {
+        throw new NotImplementedException();
+    }
+
+    public T? FindVehicle(string registrationNumber)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool RemoveVehicle(T vehicle)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool RemoveVehicle(string registrationNumber)
+    {
+        throw new NotImplementedException();
+    }
 }

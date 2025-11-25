@@ -2,7 +2,9 @@
 
 public class MenuItem : IMenuItem
 {
-    public string Label { get; } = string.Empty;
-    public Action? Action { get; }
-    public IEnumerable<IMenuItem>? SubItems { get; }
+    public ConsoleKey Key { get; init; }
+    public string Label { get; init; } = string.Empty;
+    public Action? Action { get; init; }
+    public IEnumerable<IMenuItem>? SubItems { get; init; }
+
 }

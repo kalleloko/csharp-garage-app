@@ -2,7 +2,8 @@
 
 public interface IMenuItem
 {
-    string Label { get; }
-    Action? Action { get; }
-    IEnumerable<IMenuItem>? SubItems { get; }
+    ConsoleKey Key { get; init; }
+    string Label { get; init; }
+    Action? Action { get; init; }
+    IEnumerable<IMenuItem>? SubItems { get; init; }
 }

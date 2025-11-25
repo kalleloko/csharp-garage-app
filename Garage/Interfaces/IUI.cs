@@ -19,17 +19,13 @@ internal interface IUI
     public T? AskForInput<T>(string? prompt = null, string? errorMessage = "Ogiltigt värde, försök igen!");
 
     /// <summary>
-    /// Prompts the user to select an option from a set of choices and returns the selected value.
+    /// 
     /// </summary>
-    /// <typeparam name="T">The type of the values in the options dictionary.</typeparam>
-    /// <param name="options">A dictionary where each key represents a selectable option and its corresponding value represents the associated
-    /// data.</param>
-    /// <param name="displayFunc">A function that generates a display string for each value in the options dictionary.</param>
-    /// <param name="prompt">An optional message to display before listing the options. If null, no prompt is displayed.</param>
-    /// <param name="errorMessage">An optional message to display when the user makes an invalid selection. Defaults to "Ogiltigt val, försök
-    /// igen!" if not provided.</param>
-    /// <returns>The value associated with the option selected by the user.</returns>
-    public T PrintMenu<T>(IEnumerable<IMenuItem> menu, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!");
+    /// <param name="menu"></param>
+    /// <param name="prompt"></param>
+    /// <param name="errorMessage"></param>
+    /// <returns></returns>
+    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!");
 
     /// <summary>
     /// Displays the specified prompt message to the user.
