@@ -12,8 +12,9 @@ internal class Program
         IUI ui = new ConsoleUI();
         IGarage<IVehicle> garage = new Garage<IVehicle>();
         IGarageHandler<IVehicle> garageHandler = new GarageHandler<IVehicle>(garage);
+        IVehicleBuilder vehicleFactory = new VehicleBuilder(ui);
 
-        GarageManager manager = new(ui, garageHandler);
+        GarageManager manager = new(ui, garageHandler, vehicleFactory);
 
         manager.Run();
     }
