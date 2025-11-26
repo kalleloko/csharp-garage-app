@@ -2,6 +2,11 @@
 
 internal interface IGarage<T> : IEnumerable<T> where T : IVehicle
 {
-    public T[] Vehicles { get; }
-    public int Capacity { get; init; }
+    public int MaxCapacity { get; init; }
+    public bool AddVehicle(T vehicle);
+    public bool RemoveVehicle(T vehicle);
+    public T? GetVehicle(T vehicle);
+    public int GetCapacity();
+    public bool IsFull();
+
 }

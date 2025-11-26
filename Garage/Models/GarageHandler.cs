@@ -13,28 +13,50 @@ internal class GarageHandler<T> : IGarageHandler<T> where T : IVehicle
 
     public IEnumerable<T> Vehicles
     {
-        get => (IEnumerable<T>)_garage.Vehicles.Where(v => v is not null);
+        get => _garage;
     }
 
-    public IEnumerable<KeyValuePair<string, IEnumerable<T>>> VehiclesByType => throw new NotImplementedException();
+    public IEnumerable<IGrouping<string, T>> VehiclesByType => Vehicles.GroupBy(v => v.GetType().Name);
 
-    public bool AddVehicle(T vehicle)
+    public void AddVehicle(T vehicle)
     {
-        throw new NotImplementedException();
+        if (_garage.IsFull())
+        {
+            throw new InvalidOperationException("Garaget är fullt.");
+        }
+        if (_garage.GetVehicle(vehicle) is not null)
+        {
+            throw new ArgumentException($"Fordonet '{vehicle.RegistrationNumber}' finns redan i garaget");
+        }
+        _garage.AddVehicle(vehicle);
     }
 
     public T? FindVehicle(string registrationNumber)
     {
-        throw new NotImplementedException();
+        return _garage.Where(v => v.RegistrationNumber == registrationNumber).FirstOrDefault();
     }
 
-    public bool RemoveVehicle(T vehicle)
+    public T? FindVehicle(T vehicle)
     {
-        throw new NotImplementedException();
+        return _garage.GetVehicle(vehicle);
     }
 
-    public bool RemoveVehicle(string registrationNumber)
+    public void RemoveVehicle(T vehicle)
     {
-        throw new NotImplementedException();
+        bool success = _garage.RemoveVehicle(vehicle);
+        if (!success)
+        {
+            throw new ArgumentException($"Fordonet '{vehicle.RegistrationNumber}' fanns inte i garaget");
+        }
+    }
+
+    public void RemoveVehicle(string registrationNumber)
+    {
+        T? vehicle = FindVehicle(registrationNumber);
+        if (vehicle is null)
+        {
+            throw new ArgumentException($"Fordonet '{registrationNumber}' fanns inte i garaget");
+        }
+        RemoveVehicle(vehicle);
     }
 }

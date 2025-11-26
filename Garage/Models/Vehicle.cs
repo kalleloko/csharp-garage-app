@@ -66,10 +66,8 @@ public abstract class Vehicle : IVehicle
         }
     }
 
-    //public Vehicle(string manufacturer, string registrationNumber)
-    //{
-    //    Manufacturer = manufacturer ?? string.Empty;
-    //    Model = model ?? string.Empty;
-    //    RegistrationNumber = registrationNumber ?? string.Empty;
-    //}
+    public override string ToString()
+    {
+        return $"{GetType().Name}: {Manufacturer} ({Model}), reg.nr: '{RegistrationNumber}'";
+    }
 }

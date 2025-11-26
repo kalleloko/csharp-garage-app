@@ -78,7 +78,8 @@ public class ConsoleUI : IUI
             }
             if (selectedItem.SubItems is not null)
             {
-                PrintMenu(selectedItem.SubItems, exitItem, $"{selectedItem.Label}: {prompt}", errorMessage);
+                var subExitItem = exitItem.WithLabel("← Tillbaka...");
+                PrintMenu(selectedItem.SubItems, subExitItem, $"{selectedItem.Label}: {prompt}", errorMessage);
             }
             else if (selectedItem.Action is not null)
             {

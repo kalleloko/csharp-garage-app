@@ -6,4 +6,5 @@ public interface IMenuItem
     string Label { get; init; }
     Action? Action { get; init; }
     IEnumerable<IMenuItem>? SubItems { get; init; }
+    IMenuItem WithLabel(string newLabel);
 }

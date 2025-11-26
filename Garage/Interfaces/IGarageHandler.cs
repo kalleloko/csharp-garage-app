@@ -3,9 +3,10 @@
 internal interface IGarageHandler<T> where T : IVehicle
 {
     public IEnumerable<T> Vehicles { get; }
-    public IEnumerable<KeyValuePair<string, IEnumerable<T>>> VehiclesByType { get; }
-    public bool AddVehicle(T vehicle);
-    public bool RemoveVehicle(T vehicle);
-    public bool RemoveVehicle(string registrationNumber);
+    public IEnumerable<IGrouping<string, T>> VehiclesByType { get; }
+    public void AddVehicle(T vehicle);
+    public void RemoveVehicle(T vehicle);
+    public void RemoveVehicle(string registrationNumber);
+    public T? FindVehicle(T vehicle);
     public T? FindVehicle(string registrationNumber);
 }

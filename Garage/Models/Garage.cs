@@ -5,19 +5,20 @@ namespace GarageApp.Models;
 
 public class Garage<T> : IGarage<T> where T : IVehicle
 {
-    private int _capacity = 1;
-    private static int _maxCapacity = 10000;
-    public T[] Vehicles { get; private set; }
-    public int Capacity
+    private int _maxCapacity = 1;
+    private static int _globalMaxCapacity = 10000;
+
+    private T?[] _vehicles;
+    public int MaxCapacity
     {
-        get => _capacity;
+        get => _maxCapacity;
         init
         {
-            if (value < 1 || value > _maxCapacity)
+            if (value < 1 || value > _globalMaxCapacity)
             {
-                throw new ArgumentOutOfRangeException($"Garagets kapacitet måste vara mellan 1 och {_maxCapacity}");
+                throw new ArgumentOutOfRangeException($"Garagets kapacitet måste vara mellan 1 och {_globalMaxCapacity}");
             }
-            _capacity = value;
+            _maxCapacity = value;
         }
     }
 
@@ -27,24 +28,67 @@ public class Garage<T> : IGarage<T> where T : IVehicle
 
     public Garage(int capacity)
     {
-        Capacity = capacity;
-        Vehicles = new T[capacity];
+        MaxCapacity = capacity;
+        _vehicles = new T[capacity];
     }
 
     public IEnumerator<T> GetEnumerator()
     {
-        foreach (T vehicle in Vehicles)
+        foreach (T? vehicle in _vehicles)
         {
-            if (vehicle is null)
+            if (vehicle is not null)
             {
-                continue;
+                yield return vehicle;
             }
-            yield return vehicle;
         }
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+
+    public bool AddVehicle(T vehicle)
+    {
+        bool result = false;
+        for (int i = 0; i < MaxCapacity; i++)
+        {
+            if (_vehicles[i] is null)
+            {
+                _vehicles[i] = vehicle;
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+    public bool RemoveVehicle(T vehicle)
+    {
+        bool result = false;
+        for (int i = 0; i < _vehicles.Length; i++)
+        {
+            if (Equals(_vehicles[i], vehicle))
+            {
+                _vehicles[i] = default(T);
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    public T? GetVehicle(T vehicle)
+    {
+        return _vehicles.Where(v => Equals(v, vehicle)).FirstOrDefault();
+    }
+
+    public int GetCapacity()
+    {
+        return MaxCapacity - _vehicles.Where(v => v != null).Count();
+    }
+
+    public bool IsFull()
+    {
+        return GetCapacity() == 0;
     }
 }
