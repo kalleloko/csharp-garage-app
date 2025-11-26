@@ -25,9 +25,9 @@ internal class GarageManager
 
     private void AddVehicle()
     {
-        Car c = new() { Manufacturer = "BMW", Model = "Wha", RegistrationNumber = "Rgd567", WheelCount = 4 };
         try
         {
+            Car c = new() { Manufacturer = "BMW", Model = "Wha", RegistrationNumber = "Rgd567", WheelCount = 4 };
             _handler.AddVehicle(c);
             _ui.PrintLine("Detta fordon har parkerat:");
             _ui.PrintLine(c.ToString());

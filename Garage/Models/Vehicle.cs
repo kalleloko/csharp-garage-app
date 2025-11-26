@@ -9,6 +9,7 @@ public abstract class Vehicle : IVehicle
     private string _registrationNumber = string.Empty;
     private string _manufacturer = string.Empty;
     private string _model = string.Empty;
+    private static List<string> _globalRegistrationNumbers = new List<string>();
 
     public required string Model
     {
@@ -17,7 +18,7 @@ public abstract class Vehicle : IVehicle
         {
             if (value.Length < 1)
             {
-                throw new ArgumentException("Model cannot be empty");
+                throw new ArgumentException("Modell måste matas in", "Model");
             }
             _model = value;
         }
@@ -30,7 +31,7 @@ public abstract class Vehicle : IVehicle
         {
             if (value.Length < 1)
             {
-                throw new ArgumentException("Manufacturer cannot be empty");
+                throw new ArgumentException("Tillverkare måste matas in", "Manufacturer");
             }
             _manufacturer = value;
         }
@@ -43,7 +44,7 @@ public abstract class Vehicle : IVehicle
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value));
+                throw new ArgumentOutOfRangeException("Fordonet kan inte ha negativt antal hjul", "WheelCount");
             }
             _wheelCount = value;
         }
@@ -60,9 +61,16 @@ public abstract class Vehicle : IVehicle
             }
             if (!Regex.IsMatch(value, "^[a-zA-Z0-9]+$"))
             {
-                throw new ArgumentException("Registration number can only contain english alphanumerical values");
+                throw new ArgumentException("Registreringsnummer kan endast bestå av alfa-numeriska värden", "RegistrationNumber");
             }
-            _registrationNumber = value.ToUpper();
+            string ucValue = value.ToUpper();
+            if (_globalRegistrationNumbers.Contains(ucValue))
+            {
+                // Todo: låt inte fordonklassen själv hålla reda på detta, utan någon RegistrationHandler-klass
+                throw new ArgumentException($"Registreringsnumret '{ucValue}' finns redan registrerat");
+            }
+            _globalRegistrationNumbers.Add(ucValue);
+            _registrationNumber = ucValue;
         }
     }
 

@@ -51,13 +51,16 @@ public class Garage<T> : IGarage<T> where T : IVehicle
     public bool AddVehicle(T vehicle)
     {
         bool result = false;
-        for (int i = 0; i < MaxCapacity; i++)
+        if (!IsFull() && (GetVehicle(vehicle) is null))
         {
-            if (_vehicles[i] is null)
+            for (int i = 0; i < MaxCapacity; i++)
             {
-                _vehicles[i] = vehicle;
-                result = true;
-                break;
+                if (_vehicles[i] is null)
+                {
+                    _vehicles[i] = vehicle;
+                    result = true;
+                    break;
+                }
             }
         }
         return result;
@@ -79,7 +82,7 @@ public class Garage<T> : IGarage<T> where T : IVehicle
 
     public T? GetVehicle(T vehicle)
     {
-        return _vehicles.Where(v => Equals(v, vehicle)).FirstOrDefault();
+        return _vehicles.Where(v => (v is not null) && (v.RegistrationNumber == vehicle.RegistrationNumber)).FirstOrDefault();
     }
 
     public int GetCapacity()
