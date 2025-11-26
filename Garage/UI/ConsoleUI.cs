@@ -193,4 +193,19 @@ public class ConsoleUI : IUI
         return sb.ToString();
     }
 
+    public object? AskForInput(Type type, string? prompt = null, string? errorMessage = "Ogiltigt värde, försök igen!")
+    {
+        // Hitta metoden AskForInput<T>
+        var genericMethod = this.GetType()
+                                .GetMethod("AskForInput", new[] { typeof(string), typeof(string) });
+
+        if (genericMethod == null)
+            throw new InvalidOperationException("Could not find generic AskForInput<T> method.");
+
+        // Skapa en version av metoden med rätt type-argument
+        var closedMethod = genericMethod.MakeGenericMethod(type);
+
+        // Anropa metoden
+        return closedMethod.Invoke(this, new object?[] { prompt, errorMessage });
+    }
 }

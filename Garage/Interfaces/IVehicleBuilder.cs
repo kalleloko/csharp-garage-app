@@ -1,8 +1,7 @@
 ﻿namespace GarageApp.Interfaces
 {
-    internal interface IVehicleBuilder
+    internal interface IVehicleBuilder<T> where T : IVehicle
     {
-
-        IVehicle CreateVehicle();
+        T Build();
     }
 }

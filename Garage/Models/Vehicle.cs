@@ -11,6 +11,18 @@ public abstract class Vehicle : IVehicle
     private string _model = string.Empty;
     private static List<string> _globalRegistrationNumbers = new List<string>();
 
+    public required string Manufacturer
+    {
+        get => _manufacturer;
+        init
+        {
+            if (value.Length < 1)
+            {
+                throw new ArgumentException("Tillverkare måste matas in", "Manufacturer");
+            }
+            _manufacturer = value;
+        }
+    }
     public required string Model
     {
         get => _model;
@@ -24,19 +36,6 @@ public abstract class Vehicle : IVehicle
         }
     }
 
-    public required string Manufacturer
-    {
-        get => _manufacturer;
-        init
-        {
-            if (value.Length < 1)
-            {
-                throw new ArgumentException("Tillverkare måste matas in", "Manufacturer");
-            }
-            _manufacturer = value;
-        }
-    }
-
     public required int WheelCount
     {
         get => _wheelCount;
@@ -44,7 +43,7 @@ public abstract class Vehicle : IVehicle
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException("Fordonet kan inte ha negativt antal hjul", "WheelCount");
+                throw new ArgumentOutOfRangeException("WheelCount", "Fordonet kan inte ha negativt antal hjul");
             }
             _wheelCount = value;
         }
@@ -57,7 +56,7 @@ public abstract class Vehicle : IVehicle
         {
             if (value == string.Empty)
             {
-                throw new ArgumentOutOfRangeException(nameof(value));
+                throw new ArgumentOutOfRangeException("RegistrationNumber", "Registreringsnummer måste fyllas i");
             }
             if (!Regex.IsMatch(value, "^[a-zA-Z0-9]+$"))
             {

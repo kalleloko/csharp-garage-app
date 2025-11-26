@@ -18,6 +18,8 @@ internal interface IUI
     /// <returns>The user input converted to the specified type <typeparamref name="T"/>.</returns>
     public T? AskForInput<T>(string? prompt = null, string? errorMessage = "Ogiltigt värde, försök igen!");
 
+    public object? AskForInput(Type type, string? prompt = null, string? errorMessage = "Ogiltigt värde, försök igen!");
+
     /// <summary>
     /// 
     /// </summary>

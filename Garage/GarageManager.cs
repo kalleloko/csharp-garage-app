@@ -1,5 +1,6 @@
 ﻿
 using GarageApp.Interfaces;
+using GarageApp.Models;
 
 namespace GarageApp;
 
@@ -8,15 +9,13 @@ internal class GarageManager
 
     private readonly IUI _ui;
     private readonly IGarageHandler<IVehicle> _handler;
-    private readonly IVehicleBuilder _vehicleFactory;
 
     private IEnumerable<MenuItem> _menu = new List<MenuItem>();
 
-    public GarageManager(IUI ui, IGarageHandler<IVehicle> handler, IVehicleBuilder vehicleFactory)
+    public GarageManager(IUI ui, IGarageHandler<IVehicle> handler)
     {
         _ui = ui;
         _handler = handler;
-        _vehicleFactory = vehicleFactory;
         _menu = new List<MenuItem>()
         {
             new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = ListAllVehicles},
@@ -26,9 +25,10 @@ internal class GarageManager
 
     private void AddVehicle()
     {
+        IVehicleBuilder<Car> builder = new VehicleBuilder<Car>(_ui);
         try
         {
-            IVehicle c = _vehicleFactory.CreateVehicle();
+            IVehicle c = builder.Build();
             _handler.AddVehicle(c);
             _ui.PrintLine("Detta fordon har parkerat:");
             _ui.PrintLine(c.ToString());
