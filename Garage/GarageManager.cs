@@ -1,6 +1,7 @@
 ﻿
 using GarageApp.Interfaces;
 using GarageApp.Models;
+using System.Text;
 
 namespace GarageApp;
 
@@ -18,12 +19,19 @@ internal class GarageManager
         _garageHandler = handler;
         _menu = new List<MenuItem>()
         {
-            new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = PrintAllVehicles},
-            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
-            new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
-            new MenuItem() {Key = ConsoleKey.D, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
-            new MenuItem() {Key = ConsoleKey.E, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
+            new MenuItem() {Key = ConsoleKey.A, Label = "Skapa ett garage", Action = CreateGarage}, // TODO ta bort efter att garaget initialieserats
+            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon", Action = PrintAllVehicles},
+            new MenuItem() {Key = ConsoleKey.C, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
+            new MenuItem() {Key = ConsoleKey.D, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
+            new MenuItem() {Key = ConsoleKey.E, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
+            new MenuItem() {Key = ConsoleKey.F, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
         };
+    }
+
+    private void CreateGarage()
+    {
+        int cap = _ui.AskForInput<int>("Ange hur många platser garaget ska ha");
+        _garageHandler.MaxCapacity = cap;
     }
 
     private void RemoveVehicle()
@@ -78,22 +86,48 @@ internal class GarageManager
 
     private void BatchCreateAndAddVehicles()
     {
-        _ui.PrintLine("Dessa fordon har parkerat:");
+
         IVehicle[] vehicles = new IVehicle[] {
             new Car() {Manufacturer = "BMW", Model = "Z3", WheelCount = 4, RegistrationNumber = "AKU588"},
             new Bike() {Manufacturer = "Crescent", Model = "7x", WheelCount = 2, RegistrationNumber = "K7748397264"},
             new Car() {Manufacturer = "Saab", Model = "9000", WheelCount = 4, RegistrationNumber = "HRW668"},
             new Car() {Manufacturer = "Audi", Model = "B3", WheelCount = 4, RegistrationNumber = "HI798P"},
         };
+        StringBuilder sb = new StringBuilder();
+
         foreach (var vehicle in vehicles)
         {
-            _garageHandler.AddVehicle(vehicle);
-            _ui.PrintLine(vehicle.ToString());
+            try
+            {
+                _garageHandler.AddVehicle(vehicle);
+                sb.AppendLine(vehicle.ToString());
+            }
+            catch (InvalidOperationException e)
+            {
+                _ui.PrintErrorLine(e.Message);
+                // garage is full, we can break out of here
+                return;
+            }
+            catch (Exception e)
+            {
+                _ui.PrintErrorLine(e.Message);
+            }
+        }
+        if (sb.Length > 0)
+        {
+            sb = new StringBuilder()
+                .AppendLine("Dessa fordon har parkerat:")
+                .Append(sb.ToString());
+            _ui.PrintLine(sb.ToString());
         }
     }
 
     private void CreateAndAddVehicle()
     {
+        if (_garageHandler.GarageIsFull())
+        {
+            _ui.PrintErrorLine("Garaget är fullt");
+        }
         IVehicle? vehicle = MakeVehicle();
 
         if (vehicle is null)

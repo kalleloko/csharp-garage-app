@@ -5,31 +5,28 @@ namespace GarageApp.Models;
 
 public class Garage<T> : IGarage<T> where T : IVehicle
 {
-    private int _maxCapacity = 1;
+    private int _maxCapacity = 0;
+    private bool _isInitialized = false;
     private static int _globalMaxCapacity = 10000;
 
-    private T?[] _vehicles;
+    private T?[] _vehicles = [];
     public int MaxCapacity
     {
         get => _maxCapacity;
-        init
+        set
         {
+            if (_isInitialized)
+            {
+                throw new InvalidOperationException("MaxCapacity kan bara sättas en gång.");
+            }
             if (value < 1 || value > _globalMaxCapacity)
             {
                 throw new ArgumentOutOfRangeException($"Garagets kapacitet måste vara mellan 1 och {_globalMaxCapacity}");
             }
             _maxCapacity = value;
+            _isInitialized = true;
+            _vehicles = new T[value];
         }
-    }
-
-    public Garage() : this(100)
-    {
-    }
-
-    public Garage(int capacity)
-    {
-        MaxCapacity = capacity;
-        _vehicles = new T[capacity];
     }
 
     public IEnumerator<T> GetEnumerator()
