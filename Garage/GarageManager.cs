@@ -25,25 +25,47 @@ internal class GarageManager
 
     private void AddVehicle()
     {
-        IVehicleBuilder<Car> builder = new VehicleBuilder<Car>(_ui);
+        IVehicle vehicle = MakeVehicle();
+
+        if (vehicle is null)
+        {
+            _ui.PrintErrorLine("Kunde inte skapa något fordon av din input!");
+            return;
+        }
+
         try
         {
-            IVehicle c = builder.Build();
-            _handler.AddVehicle(c);
+            _handler.AddVehicle(vehicle);
             _ui.PrintLine("Detta fordon har parkerat:");
-            _ui.PrintLine(c.ToString());
+            _ui.PrintLine(vehicle.ToString());
         }
         catch (Exception e)
         {
             _ui.PrintErrorLine(e.Message);
         }
-        //IEnumerable<MenuItem> menu = new List<MenuItem>()
-        //{
-        //    new MenuItem() {Key = ConsoleKey.A, Label = "Hej", Action = ListAllVehicles},
-        //    new MenuItem() {Key = ConsoleKey.B, Label = "", Action = AddVehicle},
-        //};
-        //MenuItem exitItem = new MenuItem() { Key = ConsoleKey.Q, Label = "Tillbaka" };
-        //_ui.PrintMenu(menu, exitItem, "Vad vill du göra?");
+    }
+
+    private IVehicle? MakeVehicle()
+    {
+        string? typeInput = _ui.AskForInput<string>("Vilken typ av fordon vill du skapa?");
+
+        if (typeInput is null)
+        {
+            return null;
+        }
+
+        switch (typeInput.ToLower())
+        {
+            case "car":
+                return new VehicleBuilder<Car>(_ui).Build();
+
+            case "bike":
+                return new VehicleBuilder<Bike>(_ui).Build();
+
+            default:
+                return null;
+        }
+
     }
 
     private void ListAllVehicles()
