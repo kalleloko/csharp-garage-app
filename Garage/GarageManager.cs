@@ -11,27 +11,40 @@ internal class GarageManager
     private readonly IUI _ui;
     private readonly IGarageHandler<IVehicle> _garageHandler;
 
-    private IEnumerable<MenuItem> _menu = new List<MenuItem>();
-
     public GarageManager(IUI ui, IGarageHandler<IVehicle> handler)
     {
         _ui = ui;
         _garageHandler = handler;
-        _menu = new List<MenuItem>()
-        {
-            new MenuItem() {Key = ConsoleKey.A, Label = "Skapa ett garage", Action = CreateGarage}, // TODO ta bort efter att garaget initialieserats
-            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon", Action = PrintAllVehicles},
-            new MenuItem() {Key = ConsoleKey.C, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
-            new MenuItem() {Key = ConsoleKey.D, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
-            new MenuItem() {Key = ConsoleKey.E, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
-            new MenuItem() {Key = ConsoleKey.F, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
-        };
     }
 
+    internal void Run()
+    {
+        _ui.PrintLine("Det är här garage-appen. Till att börja med måste du skapa ett garage.");
+        CreateGarage();
+        _ui.PrintEmptyLines();
+
+        MenuItem exitItem = new MenuItem() { Key = ConsoleKey.Q, Label = "Avsluta" };
+        List<MenuItem> menu = new List<MenuItem>()
+            {
+                new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = PrintAllVehicles},
+                new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
+                new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
+                new MenuItem() {Key = ConsoleKey.D, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
+                new MenuItem() {Key = ConsoleKey.E, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
+            };
+        _ui.PrintMenu(menu, exitItem, "Vad vill du göra?");
+    }
     private void CreateGarage()
     {
-        int cap = _ui.AskForInput<int>("Ange hur många platser garaget ska ha");
-        _garageHandler.MaxCapacity = cap;
+        int cap = _ui.AskForInput<int>("Ange hur många platser garaget ska ha:");
+        try
+        {
+            _garageHandler.MaxCapacity = cap;
+        }
+        catch (Exception e)
+        {
+            _ui.PrintErrorLine(e.Message);
+        }
     }
 
     private void RemoveVehicle()
@@ -203,16 +216,5 @@ internal class GarageManager
             _ui.PrintLine($"{i}. {vehicle.ToString()}");
             i++;
         }
-    }
-
-    internal void Run()
-    {
-        PrintMenu();
-    }
-
-    private void PrintMenu()
-    {
-        MenuItem exitItem = new MenuItem() { Key = ConsoleKey.Q, Label = "Avsluta" };
-        _ui.PrintMenu(_menu, exitItem, "Vad vill du göra?");
     }
 }
