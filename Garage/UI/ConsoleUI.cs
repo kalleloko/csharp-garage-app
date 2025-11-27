@@ -51,47 +51,53 @@ public class ConsoleUI : IUI
             return SelectInput<T>(options, displayFunc, prompt, errorMessage);
         }
     }
-    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!")
+    public bool InvokeOneMenuAction(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!")
     {
-        while (true)
+        PrintLine(prompt);
+        foreach (IMenuItem item in menu)
         {
-            PrintLine(prompt);
-            foreach (IMenuItem item in menu)
-            {
-                Print($"{item.Key}: {item.Label}");
-                Console.WriteLine(item.SubItems is null ? "" : "...");
-            }
-            PrintLine($"{exitItem.Key}: {exitItem.Label}");
-
-            ConsoleKey selected = AskForInput<ConsoleKey>("", errorMessage);
-            Console.Clear();
-            if (selected == exitItem.Key)
-            {
-                return;
-            }
-            IMenuItem? selectedItem = menu.Where(item => item.Key == selected).FirstOrDefault();
-            if (selectedItem is null)
-            {
-                PrintErrorLine(errorMessage);
-                PrintMenu(menu, exitItem, prompt, errorMessage);
-                return;
-            }
-            if (selectedItem.SubItems is not null)
-            {
-                var subExitItem = exitItem.WithLabel("← Tillbaka...");
-                PrintMenu(selectedItem.SubItems, subExitItem, $"{selectedItem.Label}: {prompt}", errorMessage);
-            }
-            else if (selectedItem.Action is not null)
-            {
-                selectedItem.Action.Invoke();
-                Console.WriteLine();
-            }
-            else
-            {
-                PrintErrorLine($"'{selectedItem.Label}' har inte någon funktion. Välj något annat");
-                PrintMenu(menu, exitItem, prompt, errorMessage);
-            }
+            Print($"{item.Key}: {item.Label}");
+            Console.WriteLine(item.SubItems is null ? "" : "...");
         }
+        PrintLine($"{exitItem.Key}: {exitItem.Label}");
+
+        ConsoleKey selected = AskForInput<ConsoleKey>("", errorMessage);
+        Console.Clear();
+        if (selected == exitItem.Key)
+        {
+            return false;
+        }
+        IMenuItem? selectedItem = menu.Where(item => item.Key == selected).FirstOrDefault();
+        if (selectedItem is null)
+        {
+            PrintErrorLine(errorMessage);
+            return InvokeOneMenuAction(menu, exitItem, prompt, errorMessage);
+        }
+        if (selectedItem.SubItems is not null)
+        {
+            var subExitItem = exitItem.WithLabel("← Tillbaka...");
+            return InvokeOneMenuAction(selectedItem.SubItems, subExitItem, $"{selectedItem.Label}: {prompt}", errorMessage);
+        }
+        else if (selectedItem.Action is not null)
+        {
+            selectedItem.Action.Invoke();
+            Console.WriteLine();
+            return true;
+        }
+        else
+        {
+            PrintErrorLine($"'{selectedItem.Label}' har inte någon funktion. Välj något annat");
+            return InvokeOneMenuAction(menu, exitItem, prompt, errorMessage);
+        }
+    }
+    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!")
+    {
+        bool shouldContinue;
+        do
+        {
+            shouldContinue = InvokeOneMenuAction(menu, exitItem, prompt, errorMessage);
+        }
+        while (shouldContinue);
     }
 
     /// <inheritdoc/>

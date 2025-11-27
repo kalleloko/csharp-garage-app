@@ -21,13 +21,22 @@ internal interface IUI
     public object? AskForInput(Type type, string? prompt = null, string? errorMessage = "Ogiltigt värde, försök igen!");
 
     /// <summary>
+    /// From a list of menu items with associated actions, invoke the one that is selected by the user
+    /// </summary>
+    /// <param name="menu"></param>
+    /// <param name="exitItem"></param>
+    /// <param name="prompt"></param>
+    /// <param name="errorMessage"></param>
+    /// <returns>True if the action was invoked, false if not</returns>
+    public bool InvokeOneMenuAction(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!");
+    /// <summary>
     /// 
     /// </summary>
     /// <param name="menu"></param>
     /// <param name="prompt"></param>
     /// <param name="errorMessage"></param>
     /// <returns></returns>
-    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string? prompt = null, string? errorMessage = "Ogiltigt val, försök igen!");
+    public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!");
 
     /// <summary>
     /// Displays the specified prompt message to the user.
