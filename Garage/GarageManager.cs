@@ -18,18 +18,60 @@ internal class GarageManager
         _garageHandler = handler;
         _menu = new List<MenuItem>()
         {
-            new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = ListAllVehicles},
-            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = ListAllVehiclesByType},
+            new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = PrintAllVehicles},
+            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
             new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
-            new MenuItem() {Key = ConsoleKey.D, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
+            new MenuItem() {Key = ConsoleKey.D, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
+            new MenuItem() {Key = ConsoleKey.E, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
         };
     }
 
-    private void ListAllVehiclesByType()
+    private void RemoveVehicle()
+    {
+        if (_garageHandler.Vehicles.Count() <= 0)
+        {
+            _ui.PrintLine("Garaget är redan tomt");
+            return;
+        }
+        List<IVehicle> orderedVehicles = _garageHandler.Vehicles.ToList();
+        IVehicle? vehicle = null;
+        while (vehicle is null)
+        {
+
+            PrintVehicles(orderedVehicles, "");
+            int indexToRemove = _ui.AskForInput<int>("Välj vilket fordon som ska köra ut...(0 för att avbryta)") - 1;
+
+            if (indexToRemove == -1)
+            {
+                return;
+            }
+            vehicle = orderedVehicles.ElementAtOrDefault(indexToRemove);
+
+            if (vehicle is null)
+            {
+                _ui.PrintErrorLine("Ogiltigt fordonsnummer, försök igen!");
+            }
+        }
+        string? doItWhenY = _ui.AskForInput<string>($"Vill du köra ut '{vehicle.ToString()}'? (Y/N)");
+        if ((doItWhenY is not null) && (doItWhenY.ToUpper() == "Y"))
+        {
+            try
+            {
+                _garageHandler.RemoveVehicle(vehicle);
+                _ui.PrintLine($"'{vehicle.ToString()}' körde ut!");
+            }
+            catch (Exception e)
+            {
+                _ui.PrintErrorLine(e.Message);
+            }
+        }
+    }
+
+    private void PrintAllVehiclesByType()
     {
         foreach (IGrouping<string, IVehicle> group in _garageHandler.VehiclesByType)
         {
-            ListVehicles(group, $"{group.Key}s: ({group.Count()})");
+            PrintVehicles(group, $"{group.Key}s: ({group.Count()})");
             _ui.PrintEmptyLines();
         }
     }
@@ -104,16 +146,16 @@ internal class GarageManager
 
     }
 
-    private void ListAllVehicles()
+    private void PrintAllVehicles()
     {
-        ListVehicles(
+        PrintVehicles(
             _garageHandler.Vehicles,
             $"Garaget har {_garageHandler.Vehicles.Count()} fordon på sina {_garageHandler.MaxCapacity} platser:",
             "Garaget är tomt"
         );
     }
 
-    private void ListVehicles(IEnumerable<IVehicle> vehicles, string heading, string? headingWhenEmpty = "")
+    private void PrintVehicles(IEnumerable<IVehicle> vehicles, string heading, string? headingWhenEmpty = "")
     {
         if (vehicles.Count() == 0)
         {
@@ -121,9 +163,11 @@ internal class GarageManager
             return;
         }
         _ui.PrintLine(heading + Environment.NewLine);
+        int i = 1;
         foreach (var vehicle in vehicles)
         {
-            _ui.PrintLine(vehicle.ToString());
+            _ui.PrintLine($"{i}. {vehicle.ToString()}");
+            i++;
         }
     }
 
