@@ -39,6 +39,12 @@ internal interface IUI
     public void PrintMenu(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!");
 
     /// <summary>
+    /// Fill the entire width of the output with the provided char
+    /// </summary>
+    /// <param name="input"></param>
+    public void PrintFullLine(char input = '-');
+
+    /// <summary>
     /// Displays the specified prompt message to the user.
     /// </summary>
     /// <param name="prompt">The message to display.</param>

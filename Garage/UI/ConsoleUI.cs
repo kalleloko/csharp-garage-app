@@ -53,6 +53,7 @@ public class ConsoleUI : IUI
     }
     public bool InvokeOneMenuAction(IEnumerable<IMenuItem> menu, IMenuItem exitItem, string prompt, string? errorMessage = "Ogiltigt val, försök igen!")
     {
+
         PrintLine(prompt);
         foreach (IMenuItem item in menu)
         {
@@ -82,6 +83,7 @@ public class ConsoleUI : IUI
         {
             selectedItem.Action.Invoke();
             Console.WriteLine();
+            PrintFullLine();
             return true;
         }
         else
@@ -98,6 +100,11 @@ public class ConsoleUI : IUI
             shouldContinue = InvokeOneMenuAction(menu, exitItem, prompt, errorMessage);
         }
         while (shouldContinue);
+    }
+
+    public void PrintFullLine(char input = '-')
+    {
+        PrintLine(new string(input, count: Console.WindowWidth));
     }
 
     /// <inheritdoc/>

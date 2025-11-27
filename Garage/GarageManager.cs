@@ -19,9 +19,19 @@ internal class GarageManager
         _menu = new List<MenuItem>()
         {
             new MenuItem() {Key = ConsoleKey.A, Label = "Lista parkerade fordon", Action = ListAllVehicles},
-            new MenuItem() {Key = ConsoleKey.B, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
-            new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
+            new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = ListAllVehiclesByType},
+            new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
+            new MenuItem() {Key = ConsoleKey.D, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
         };
+    }
+
+    private void ListAllVehiclesByType()
+    {
+        foreach (IGrouping<string, IVehicle> group in _garageHandler.VehiclesByType)
+        {
+            ListVehicles(group, $"{group.Key}:");
+            _ui.PrintEmptyLines();
+        }
     }
 
     private void BatchCreateAndAddVehicles()
@@ -96,12 +106,21 @@ internal class GarageManager
 
     private void ListAllVehicles()
     {
-        var vehicles = _garageHandler.Vehicles;
+        ListVehicles(
+            _garageHandler.Vehicles,
+            $"Garaget har {_garageHandler.Vehicles.Count()} fordon på sina {_garageHandler.MaxCapacity} platser:",
+            "Garaget är tomt"
+        );
+    }
+
+    private void ListVehicles(IEnumerable<IVehicle> vehicles, string heading, string? headingWhenEmpty = "")
+    {
         if (vehicles.Count() == 0)
         {
-            _ui.PrintLine("Garaget är tomt");
+            _ui.PrintLine(headingWhenEmpty);
             return;
         }
+        _ui.PrintLine(heading + Environment.NewLine);
         foreach (var vehicle in vehicles)
         {
             _ui.PrintLine(vehicle.ToString());
@@ -117,10 +136,5 @@ internal class GarageManager
     {
         MenuItem exitItem = new MenuItem() { Key = ConsoleKey.Q, Label = "Avsluta" };
         _ui.PrintMenu(_menu, exitItem, "Vad vill du göra?");
-    }
-
-    private void Test()
-    {
-        _ui.PrintLine("Yep...");
     }
 }
