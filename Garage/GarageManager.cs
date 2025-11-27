@@ -29,7 +29,7 @@ internal class GarageManager
     {
         foreach (IGrouping<string, IVehicle> group in _garageHandler.VehiclesByType)
         {
-            ListVehicles(group, $"{group.Key}:");
+            ListVehicles(group, $"{group.Key}s: ({group.Count()})");
             _ui.PrintEmptyLines();
         }
     }
