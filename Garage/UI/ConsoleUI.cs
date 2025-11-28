@@ -125,6 +125,11 @@ public class ConsoleUI : IUI
         }
     }
 
+    public void Clear()
+    {
+        Console.Clear();
+    }
+
     /// <inheritdoc/>
     /// <summary>
     /// Does nothing if prompt is null, empty, or whitespace.

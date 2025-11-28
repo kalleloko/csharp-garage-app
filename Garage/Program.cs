@@ -24,8 +24,5 @@ internal class Program
             .Build();
 
         host.Services.GetRequiredService<GarageManager>().Run();
-        //GarageManager manager = new(ui, garageHandler);
-
-        //manager.Run();
     }
 }

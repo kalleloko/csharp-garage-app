@@ -56,6 +56,8 @@ internal interface IUI
     /// <param name="prompt">The text to write to the output.</param>
     public void PrintLine(string? prompt);
 
+    public void Clear();
+
     /// <summary>
     /// Writes the specified prompt, intended for error messages, followed by a newline to the output.
     /// </summary>

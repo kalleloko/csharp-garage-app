@@ -40,12 +40,26 @@ internal class GarageManager
 
     private void SearchVehicle()
     {
-        _ui.PrintLine("Sök med dessa flaggor:");
-        string search = _ui.AskForInput<string>(_searchParser.Instructions) ?? string.Empty;
-        IEnumerable<IVehicle> vehicles = _garageHandler.Vehicles;
-        foreach (Func<IVehicle, bool> filterIsApplied in _searchParser.Parse(search))
+        while (true)
         {
+            string search = _ui.AskForInput<string>("Sök fordon: (h för hjälp, 0 för att gå tillbaka)") ?? string.Empty;
+            if (search == "h")
+            {
+                _ui.PrintLine(_searchParser.Instructions);
+                _ui.PrintEmptyLines();
+                continue;
+            }
+            if (search == "0")
+            {
+                return;
+            }
+            IEnumerable<IVehicle> vehicles = _garageHandler.Vehicles;
+            Func<IVehicle, bool> filterIsApplied = _searchParser.Parse(search);
             vehicles = vehicles.Where(filterIsApplied);
+
+            _ui.Clear();
+            PrintVehicles(vehicles.ToArray(), "Hittade dessa fordon:", "Hittade inga fordon.");
+            _ui.PrintEmptyLines();
         }
     }
 

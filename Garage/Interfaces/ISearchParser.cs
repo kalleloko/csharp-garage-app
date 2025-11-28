@@ -2,6 +2,6 @@
 
 internal interface ISearchParser
 {
-    public string Instructions { get; }
-    IEnumerable<Func<IVehicle, bool>> Parse(string search);
+    string Instructions { get; }
+    Func<IVehicle, bool> Parse(string search);
 }
