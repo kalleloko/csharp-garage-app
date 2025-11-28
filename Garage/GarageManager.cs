@@ -30,10 +30,19 @@ internal class GarageManager
                 new MenuItem() {Key = ConsoleKey.B, Label = "Lista parkerade fordon (grupperat efter typ)", Action = PrintAllVehiclesByType},
                 new MenuItem() {Key = ConsoleKey.C, Label = "Skapa och parkera ett fordon", Action = CreateAndAddVehicle},
                 new MenuItem() {Key = ConsoleKey.D, Label = "Kör ut fordon från garaget", Action = RemoveVehicle},
-                new MenuItem() {Key = ConsoleKey.E, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
+                new MenuItem() {Key = ConsoleKey.E, Label = "Sök fordon", Action = SearchVehicle},
+                new MenuItem() {Key = ConsoleKey.F, Label = "Auto-skapa och parkera ett gäng fordon", Action = BatchCreateAndAddVehicles},
             };
         _ui.PrintMenu(menu, exitItem, "Vad vill du göra?");
     }
+
+    private void SearchVehicle()
+    {
+        _ui.PrintLine("Sök med dessa flaggor:");
+        string search = _ui.AskForInput<string>(SearchParser.Instructions) ?? string.Empty;
+        SearchParser.Parse(search);
+    }
+
     private void CreateGarage()
     {
         int cap = _ui.AskForInput<int>("Ange hur många platser garaget ska ha:");
