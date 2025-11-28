@@ -10,11 +10,13 @@ internal class GarageManager
 
     private readonly IUI _ui;
     private readonly IGarageHandler<IVehicle> _garageHandler;
+    private readonly ISearchParser _searchParser;
 
-    public GarageManager(IUI ui, IGarageHandler<IVehicle> handler)
+    public GarageManager(IUI ui, IGarageHandler<IVehicle> handler, ISearchParser searchParser)
     {
         _ui = ui;
         _garageHandler = handler;
+        _searchParser = searchParser;
     }
 
     internal void Run()
@@ -39,8 +41,12 @@ internal class GarageManager
     private void SearchVehicle()
     {
         _ui.PrintLine("Sök med dessa flaggor:");
-        string search = _ui.AskForInput<string>(SearchParser.Instructions) ?? string.Empty;
-        SearchParser.Parse(search);
+        string search = _ui.AskForInput<string>(_searchParser.Instructions) ?? string.Empty;
+        IEnumerable<IVehicle> vehicles = _garageHandler.Vehicles;
+        foreach (Func<IVehicle, bool> filterIsApplied in _searchParser.Parse(search))
+        {
+            vehicles = vehicles.Where(filterIsApplied);
+        }
     }
 
     private void CreateGarage()

@@ -1,6 +1,8 @@
 ﻿using GarageApp.Interfaces;
 using GarageApp.Models;
 using GarageApp.UI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace GarageApp;
 
@@ -9,12 +11,21 @@ internal class Program
 
     static void Main(string[] args)
     {
-        IUI ui = new ConsoleUI();
-        IGarage<IVehicle> garage = new Garage<IVehicle>();
-        IGarageHandler<IVehicle> garageHandler = new GarageHandler<IVehicle>(garage);
+        var host = Host.CreateDefaultBuilder(args)
+            .ConfigureServices(services =>
+            {
+                services.AddSingleton<IGarage<IVehicle>, Garage<IVehicle>>();
+                services.AddSingleton<IUI, ConsoleUI>();
+                services.AddSingleton<ISearchParser, SearchParser>();
+                services.AddSingleton<IGarageHandler<IVehicle>, GarageHandler<IVehicle>>();
+                services.AddSingleton<GarageManager>();
+            })
+            .UseConsoleLifetime()
+            .Build();
 
-        GarageManager manager = new(ui, garageHandler);
+        host.Services.GetRequiredService<GarageManager>().Run();
+        //GarageManager manager = new(ui, garageHandler);
 
-        manager.Run();
+        //manager.Run();
     }
 }
