@@ -75,7 +75,8 @@ internal abstract class Vehicle : IVehicle
 
     public override string ToString()
     {
-        return $"{GetType().Name}: {Manufacturer} ({Model}), reg.nr: '{RegistrationNumber}'";
+        string wheels = WheelCount > 0 ? $"{WheelCount}-hjulig " : "";
+        return $"{wheels}{GetType().Name}: {Manufacturer} ({Model}), reg.nr: '{RegistrationNumber}'";
     }
 
 
