@@ -1,4 +1,5 @@
-﻿using GarageApp.Interfaces;
+﻿using GarageApp.Enums;
+using GarageApp.Interfaces;
 using GarageApp.Models;
 
 namespace GarageAppTest;
@@ -14,17 +15,19 @@ public class GarageTest : IDisposable
         _vehicles = new List<IVehicle> {
             new Car()
             {
-                Manufacturer = "BMW",
+                Manufacturer = Manufacturer.BMW,
                 Model = "Z1",
                 RegistrationNumber = "ABC 123",
-                WheelCount = 4
+                WheelCount = 4,
+                FuelType = Fueltype.Gasoline
             },
             new Bike()
             {
-                Manufacturer = "Crescent",
+                Manufacturer = Manufacturer.Crescent,
                 Model = "A2",
                 RegistrationNumber = "ZK88881929",
-                WheelCount = 2
+                WheelCount = 2,
+                GearCount = 12
             },
         };
         _garage = new Garage<IVehicle>();
@@ -51,7 +54,7 @@ public class GarageTest : IDisposable
     {
         SetupGarage(_vehicles.Count() + 1);
 
-        Car vehicle = new Car() { Manufacturer = "a", Model = "a", RegistrationNumber = "a", WheelCount = 1 };
+        Car vehicle = new Car() { Manufacturer = Manufacturer.Audi, Model = "a", RegistrationNumber = "a", WheelCount = 1, FuelType = Fueltype.Gasoline };
 
         Assert.True(_garage.AddVehicle(vehicle));
         Assert.Equal(_vehicles.Count() + 1, _garage.Count());
@@ -61,7 +64,7 @@ public class GarageTest : IDisposable
     {
         SetupGarage(_vehicles.Count());
 
-        Car vehicle = new Car() { Manufacturer = "a", Model = "a", RegistrationNumber = "a", WheelCount = 1 };
+        Car vehicle = new Car() { Manufacturer = Manufacturer.Volvo, Model = "a", RegistrationNumber = "a", WheelCount = 1, FuelType = Fueltype.Gasoline };
 
         Assert.False(_garage.AddVehicle(vehicle));
         Assert.Equal(_vehicles.Count(), _garage.Count());
@@ -89,7 +92,7 @@ public class GarageTest : IDisposable
     {
         SetupGarage(_vehicles.Count());
 
-        Car vehicle = new Car() { Manufacturer = "a", Model = "a", RegistrationNumber = "a", WheelCount = 1 };
+        Car vehicle = new Car() { Manufacturer = Manufacturer.Volvo, Model = "a", RegistrationNumber = "a", WheelCount = 1, FuelType = Fueltype.Gasoline };
         Assert.Null(_garage.GetVehicle(vehicle));
     }
 

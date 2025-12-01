@@ -1,27 +1,20 @@
 ﻿namespace GarageApp.Models;
 
+using GarageApp.Enums;
 using GarageApp.Interfaces;
 using System.Text.RegularExpressions;
 
 internal abstract class Vehicle : IVehicle
 {
-    private int _wheelCount = 4;
+    protected int _wheelCount = 4;
     private string _registrationNumber = string.Empty;
-    private string _manufacturer = string.Empty;
     private string _model = string.Empty;
     private static List<string> _globalRegistrationNumbers = new List<string>();
 
-    public required string Manufacturer
+    public required Manufacturer Manufacturer
     {
-        get => _manufacturer;
-        init
-        {
-            if (value.Length < 1)
-            {
-                throw new ArgumentException("Tillverkare måste matas in", "Manufacturer");
-            }
-            _manufacturer = value;
-        }
+        get;
+        init;
     }
     public required string Model
     {
@@ -36,7 +29,7 @@ internal abstract class Vehicle : IVehicle
         }
     }
 
-    public required int WheelCount
+    public virtual required int WheelCount
     {
         get => _wheelCount;
         init

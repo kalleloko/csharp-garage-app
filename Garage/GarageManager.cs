@@ -1,4 +1,5 @@
 ﻿
+using GarageApp.Enums;
 using GarageApp.Interfaces;
 using GarageApp.Models;
 using System.Text;
@@ -133,13 +134,18 @@ internal class GarageManager
         try
         {
             vehicles = new IVehicle[] {
-                new Car() {Manufacturer = "BMW", Model = "Z3", WheelCount = 4, RegistrationNumber = "AKU588"},
-                new Bike() {Manufacturer = "Crescent", Model = "7x", WheelCount = 2, RegistrationNumber = "K7748397264"},
-                new Car() {Manufacturer = "Saab", Model = "9000", WheelCount = 4, RegistrationNumber = "HRW668"},
-                new Car() {Manufacturer = "Audi", Model = "B3", WheelCount = 4, RegistrationNumber = "HI798P"},
+                new Car() {Manufacturer = Manufacturer.BMW, Model = "Z3", WheelCount = 4, RegistrationNumber = "AKU588", FuelType = Fueltype.Gasoline},
+                new Bike() {Manufacturer = Manufacturer.Crescent, Model = "7x", WheelCount = 2, RegistrationNumber = "K7748397264", GearCount = 12},
+                new Car() {Manufacturer = Manufacturer.Saab, Model = "9000", WheelCount = 4, RegistrationNumber = "HRW668", FuelType = Fueltype.Gasoline},
+                new Car() {Manufacturer = Manufacturer.Audi, Model = "B3", WheelCount = 4, RegistrationNumber = "HUU733", FuelType = Fueltype.Electricity},
+                new Boat() {Manufacturer = Manufacturer.Audi, Model = "B3", WheelCount = 4, RegistrationNumber = "UIE 888342", MastCount = 2},
+                new Bus() {Manufacturer = Manufacturer.Audi, Model = "B3", WheelCount = 4, RegistrationNumber = "JOK142", SeatCount = 64},
+                new Bus() {Manufacturer = Manufacturer.Audi, Model = "B3", WheelCount = 4, RegistrationNumber = "KTJ948", SeatCount = 53},
+                new Motorcycle() {Manufacturer = Manufacturer.BMW, Model = "Swoosh", WheelCount = 2, RegistrationNumber = "FWW323", FuelType = Fueltype.Gasoline},
+                new Airplane() {Manufacturer = Manufacturer.Boeing, Model = "737", WheelCount = 32, RegistrationNumber = "JD888839 348D LE", CrewCount=6, PassengerSeatCount=223},
             };
         }
-        catch (Exception e)
+        catch (Exception)
         {
             _ui.PrintErrorLine("Det verkar som om dessa fordon redan är skapade!");
         }

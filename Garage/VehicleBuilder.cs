@@ -1,5 +1,6 @@
 ﻿using GarageApp.Interfaces;
 using System.Reflection;
+using System.Text;
 
 namespace GarageApp;
 
@@ -111,11 +112,13 @@ internal class VehicleBuilder<T> : IVehicleBuilder<T> where T : IVehicle
             {
 
                 var names = Enum.GetNames(type);
+                StringBuilder sb = new();
+                sb.Append(prompt + Environment.NewLine);
 
                 for (int i = 0; i < names.Length; i++)
-                    _ui.PrintLine($"{i + 1}. {names[i]}");
+                    sb.Append($"{i + 1}. {names[i]}" + Environment.NewLine);
 
-                int choice = _ui.AskForInput<int>(prompt);
+                int choice = _ui.AskForInput<int>(sb.ToString());
 
                 if (choice < 1 || choice > names.Length)
                 {

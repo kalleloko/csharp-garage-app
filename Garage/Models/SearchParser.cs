@@ -37,31 +37,29 @@ internal class SearchParser : ISearchParser
         string allPropsSearch = match.Groups["search"].Value;
         if (!string.IsNullOrEmpty(allPropsSearch))
         {
-            foreach (char flagChar in new char[] { 't', 'r', 'w', 'm' })
+            foreach (char flagChar in new char[] { 't', 'r', 'm' })
             {
                 string flag = $"-{flagChar} {allPropsSearch}";
-                try
-                {
-                    allPropsSearchFilters.Add(GetFilterFunction(flag));
-                }
-                catch (Exception)
-                {
-                    // move on silently if any property doesn't like the input
-                }
+                allPropsSearchFilters.Add(GetFilterFunction(flag));
             }
         }
 
         var flags = Regex.Matches(match.Groups["flags"].Value, @"-[a-z]\s+[^\s]+")
                  .Select(m => m.Value);
-        foreach (string flag in flags)
-        {
-            flagFilters.Add(GetFilterFunction(flag));
-        }
         if (flags.Count() == 0)
         {
             return v => allPropsSearchFilters.Any(f => f(v));
         }
-        return v => allPropsSearchFilters.Any(f => f(v)) && flagFilters.All(f => f(v));
+        foreach (string flag in flags)
+        {
+            flagFilters.Add(GetFilterFunction(flag));
+        }
+        if (allPropsSearchFilters.Count > 0)
+        {
+            return v => allPropsSearchFilters.Any(f => f(v)) && flagFilters.All(f => f(v));
+        }
+        return v => flagFilters.All(f => f(v));
+
     }
 
     private Func<IVehicle, bool> GetFilterFunction(string rawFlag)
@@ -71,7 +69,7 @@ internal class SearchParser : ISearchParser
         {
             case 't': return v => string.Equals(v.GetType().Name.ToUpper(), value.ToUpper());
             case 'r': return v => v.RegistrationNumber.Contains(value.ToUpper());
-            case 'm': return v => string.Equals(v.Manufacturer.ToUpper(), value.ToUpper());
+            case 'm': return v => string.Equals(v.Manufacturer.ToString().ToUpper(), value.ToUpper());
             case 'w':
                 return v =>
                 {
