@@ -18,8 +18,6 @@ internal class GarageHandler<T> : IGarageHandler<T> where T : IVehicle
 
     public IEnumerable<IGrouping<string, T>> VehiclesByType => Vehicles.GroupBy(v => v.GetType().Name);
 
-    private int _maxCapacity;
-
     public int MaxCapacity
     {
         get => _garage.MaxCapacity;

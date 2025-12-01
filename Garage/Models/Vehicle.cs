@@ -58,7 +58,7 @@ internal abstract class Vehicle : IVehicle
             {
                 throw new ArgumentOutOfRangeException("RegistrationNumber", "Registreringsnummer måste fyllas i");
             }
-            if (!Regex.IsMatch(value, "^[a-zA-Z0-9]+$"))
+            if (!Regex.IsMatch(value, "^[a-zA-Z0-9 ]+$"))
             {
                 throw new ArgumentException("Registreringsnummer kan endast bestå av alfa-numeriska värden", "RegistrationNumber");
             }
@@ -77,4 +77,6 @@ internal abstract class Vehicle : IVehicle
     {
         return $"{GetType().Name}: {Manufacturer} ({Model}), reg.nr: '{RegistrationNumber}'";
     }
+
+
 }
