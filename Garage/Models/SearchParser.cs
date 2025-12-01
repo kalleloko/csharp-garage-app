@@ -8,7 +8,12 @@ internal class SearchParser : ISearchParser
 {
     public string Instructions
     {
-        get => "[fritext (sträng)] [-t [fordonstyp (sträng)]] [-r [registreringsnummer (sträng)]] [-w [antal hjul (heltal). Lägg till '+' efter talet för att ange min-antal, och tvärtom med '-']] [-m [märke (sträng)] ]";
+        get => $"[fritext (sträng)] [-t [fordonstyp (sträng)]] [-r [registreringsnummer (sträng)]] [-w [antal hjul (heltal). Lägg till '+' efter talet för att ange min-antal, och tvärtom med '-']] [-m [märke (sträng)] ]." +
+            $"{Environment.NewLine + Environment.NewLine}Exempel:" +
+            $"{Environment.NewLine}-t Car -w 4" +
+            $"{Environment.NewLine}-r K7748" +
+            $"{Environment.NewLine}k7748 -t Bike" +
+            $"{Environment.NewLine}-w 3-";
     }
 
     /// <summary>
@@ -32,10 +37,17 @@ internal class SearchParser : ISearchParser
         string allPropsSearch = match.Groups["search"].Value;
         if (!string.IsNullOrEmpty(allPropsSearch))
         {
-            foreach (char flagChar in new char[] { 't', 'r', 'm' })
+            foreach (char flagChar in new char[] { 't', 'r', 'w', 'm' })
             {
                 string flag = $"-{flagChar} {allPropsSearch}";
-                allPropsSearchFilters.Add(GetFilterFunction(flag));
+                try
+                {
+                    allPropsSearchFilters.Add(GetFilterFunction(flag));
+                }
+                catch (Exception)
+                {
+                    // move on silently if any property doesn't like the input
+                }
             }
         }
 
