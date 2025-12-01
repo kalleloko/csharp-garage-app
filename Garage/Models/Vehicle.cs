@@ -3,7 +3,7 @@
 using GarageApp.Interfaces;
 using System.Text.RegularExpressions;
 
-public abstract class Vehicle : IVehicle
+internal abstract class Vehicle : IVehicle
 {
     private int _wheelCount = 4;
     private string _registrationNumber = string.Empty;
@@ -66,7 +66,7 @@ public abstract class Vehicle : IVehicle
             if (_globalRegistrationNumbers.Contains(ucValue))
             {
                 // Todo: låt inte fordonklassen själv hålla reda på detta, utan någon RegistrationHandler-klass
-                throw new ArgumentException($"Registreringsnumret '{ucValue}' finns redan registrerat");
+                throw new ArgumentException($"Registreringsnumret '{ucValue}' finns redan registrerat hos Transportstyrelsen");
             }
             _globalRegistrationNumbers.Add(ucValue);
             _registrationNumber = ucValue;

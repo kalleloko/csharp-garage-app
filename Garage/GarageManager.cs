@@ -129,12 +129,20 @@ internal class GarageManager
     private void BatchCreateAndAddVehicles()
     {
 
-        IVehicle[] vehicles = new IVehicle[] {
-            new Car() {Manufacturer = "BMW", Model = "Z3", WheelCount = 4, RegistrationNumber = "AKU588"},
-            new Bike() {Manufacturer = "Crescent", Model = "7x", WheelCount = 2, RegistrationNumber = "K7748397264"},
-            new Car() {Manufacturer = "Saab", Model = "9000", WheelCount = 4, RegistrationNumber = "HRW668"},
-            new Car() {Manufacturer = "Audi", Model = "B3", WheelCount = 4, RegistrationNumber = "HI798P"},
-        };
+        IVehicle[] vehicles = [];
+        try
+        {
+            vehicles = new IVehicle[] {
+                new Car() {Manufacturer = "BMW", Model = "Z3", WheelCount = 4, RegistrationNumber = "AKU588"},
+                new Bike() {Manufacturer = "Crescent", Model = "7x", WheelCount = 2, RegistrationNumber = "K7748397264"},
+                new Car() {Manufacturer = "Saab", Model = "9000", WheelCount = 4, RegistrationNumber = "HRW668"},
+                new Car() {Manufacturer = "Audi", Model = "B3", WheelCount = 4, RegistrationNumber = "HI798P"},
+            };
+        }
+        catch (Exception e)
+        {
+            _ui.PrintErrorLine("Det verkar som om dessa fordon redan är skapade!");
+        }
         StringBuilder sb = new StringBuilder();
 
         foreach (var vehicle in vehicles)

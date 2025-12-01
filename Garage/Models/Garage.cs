@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace GarageApp.Models;
 
-public class Garage<T> : IGarage<T> where T : IVehicle
+internal class Garage<T> : IGarage<T> where T : IVehicle
 {
     private int _maxCapacity = 0;
     private bool _isInitialized = false;

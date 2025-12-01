@@ -1,5 +1,5 @@
 ﻿namespace GarageApp.Models;
 
-public class Car : Vehicle
+internal class Car : Vehicle
 {
 }
